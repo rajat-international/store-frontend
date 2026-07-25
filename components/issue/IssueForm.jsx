@@ -48,31 +48,31 @@ export default function IssueForm() {
 
     const onSubmit = (formData) => {
 
-  if (!selectedFabric) return;
+        if (!selectedFabric) return;
 
-  if (
-    Number(formData.quantity) >
-    selectedFabric.quantity
-  ) {
-    alert("Insufficient Stock");
-    return;
-  }
+        if (
+            Number(formData.quantity) >
+            selectedFabric.quantity
+        ) {
+            alert("Insufficient Stock");
+            return;
+        }
 
-  mutate(
-    {
-      fabric: selectedFabric._id,
-      issuedTo: formData.issuedTo,
-      quantity: Number(formData.quantity),
-      description: formData.description,
-    },
-    {
-      onSuccess: () => {
-        reset();
-        router.push("/dashboard/issues");
-      },
-    }
-  );
-};
+        mutate(
+            {
+                fabric: selectedFabric._id,
+                issuedTo: formData.issuedTo,
+                quantity: Number(formData.quantity),
+                description: formData.description,
+            },
+            {
+                onSuccess: () => {
+                    reset();
+                    router.push("/dashboard/issues");
+                },
+            }
+        );
+    };
 
     return (
         <form
@@ -182,8 +182,8 @@ export default function IssueForm() {
                 <label className="block mb-2 font-medium">
                     Merchant Name
                 </label>
-
                 <Input
+                    className="uppercase"
                     placeholder="Enter Merchant Name"
                     {...register("issuedTo")}
                 />

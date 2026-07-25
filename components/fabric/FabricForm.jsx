@@ -118,7 +118,7 @@ export default function FabricForm({
                 <div>
                     <label>Fabric Code</label>
 
-                    <Input {...register("fabricCode")} />
+                    <Input className="uppercase" {...register("fabricCode")} />
 
                     <p className="text-red-500 text-sm">
                         {errors.fabricCode?.message}

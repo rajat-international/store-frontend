@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -32,9 +33,9 @@ export default function Sidebar() {
   return (
     <aside className="w-64 bg-white border-r min-h-screen">
 
-      <div className="text-2xl font-bold p-5 border-b">
+      <div className="text-2xl font-bold py-2 flex justify-center border-b">
 
-        Inventory
+        <Image className="h-16 w-auto" alt="logo" height={60} width={200} src="/assets/logo.png"/>
 
       </div>
 

@@ -1,6 +1,5 @@
 "use client";
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 
 import useFabrics from "@/hooks/useFabrics";
@@ -10,16 +9,25 @@ import SearchBar from "@/components/fabric/SearchBar";
 import Pagination from "@/components/common/Pagination";
 
 export default function FabricsPage() {
-  const [page, setPage] = useState(1);
-  const [search, setSearch] = useState("");
+ const [page, setPage] = useState(1);
+const [search, setSearch] = useState("");
+const [debouncedSearch, setDebouncedSearch] = useState("");
 
-  const { data, isLoading, error } = useFabrics({
-    page,
-    limit: 10,
-    search,
-  });
+useEffect(() => {
+  const timer = setTimeout(() => {
+    setDebouncedSearch(search);
+    setPage(1);
+  }, 400);
 
-  if (isLoading) return <h2>Loading...</h2>;
+  return () => clearTimeout(timer);
+}, [search]);
+
+const { data, isLoading, error } = useFabrics({
+  page,
+  limit: 10,
+  search: debouncedSearch,
+});
+
 
   if (error) return <h2>Error loading fabrics</h2>;
 
@@ -38,14 +46,18 @@ export default function FabricsPage() {
           + Add Fabric
         </Link>
       </div>
+{isLoading && (
+  <p className="mb-2 text-sm text-gray-500">
+    Searching...
+  </p>
+)}
+    <FabricTable fabrics={data?.data || []} />
 
-      <FabricTable fabrics={data.data} />
-
-      <Pagination
-        page={page}
-        totalPages={data.totalPages}
-        onPageChange={setPage}
-      />
+<Pagination
+  page={page}
+  totalPages={data?.totalPages || 1}
+  onPageChange={setPage}
+/>
     </div>
   );
 }

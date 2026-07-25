@@ -69,12 +69,13 @@ export default function FabricTable({ fabrics = [] }) {
                             </td>
 
                             <td className="p-4">
-                                {fabric.composition
-                                    ?.map(
-                                        (item) =>
-                                            `${item.percentage}% ${item.material}`
-                                    )
-                                    .join(", ")}
+                                <ul className="list-disc list-inside">
+                                    {fabric.composition?.map((item, index) => (
+                                        <li key={index}>
+                                            {item.percentage}% {item.material}
+                                        </li>
+                                    ))}
+                                </ul>
                             </td>
 
                             <td className="p-4">{fabric.gsm}</td>
