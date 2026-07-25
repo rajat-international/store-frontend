@@ -21,10 +21,6 @@ const menus = [
     name: "History",
     href: "/dashboard/history",
   },
-  {
-    name: "Profile",
-    href: "/dashboard/profile",
-  },
 ];
 
 export default function Sidebar() {

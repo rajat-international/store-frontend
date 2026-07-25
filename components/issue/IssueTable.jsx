@@ -24,6 +24,7 @@ export default function IssueTable({ issues = [] }) {
             <th className="p-4">#</th>
             <th className="p-4 text-left">Date</th>
             <th className="p-4 text-left">Code</th>
+            <th className="p-4 text-left">Challan No</th>
             <th className="p-4 text-left">Construction</th>
             <th className="p-4 text-left">Color</th>
             <th className="p-4 text-left">Issued To</th>
@@ -54,7 +55,7 @@ export default function IssueTable({ issues = [] }) {
               <td className="p-4">
                 {item.fabricCode}
               </td>
-
+              <td>{item.challanNo}</td>
               <td className="p-4">
                 {item.construction}
               </td>

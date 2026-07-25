@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import Link from "next/link";
-
+import useExportFabrics from "@/hooks/useExportFabrics";
 import useFabrics from "@/hooks/useFabrics";
 
 import FabricTable from "@/components/fabric/FabricTable";
@@ -27,7 +27,8 @@ const { data, isLoading, error } = useFabrics({
   limit: 10,
   search: debouncedSearch,
 });
-
+const { mutate: exportExcel, isPending } =
+  useExportFabrics();
 
   if (error) return <h2>Error loading fabrics</h2>;
 
@@ -39,12 +40,26 @@ const { data, isLoading, error } = useFabrics({
           onChange={setSearch}
         />
 
-        <Link
-          href="/dashboard/fabrics/add"
-          className="bg-black text-white px-5 py-2 rounded-lg"
-        >
-          + Add Fabric
-        </Link>
+     <div className="flex gap-3">
+
+  <button
+    onClick={() => exportExcel()}
+    disabled={isPending}
+    className="bg-green-600 text-white px-5 py-2 rounded-lg"
+  >
+    {isPending
+      ? "Exporting..."
+      : "Export Excel"}
+  </button>
+
+  <Link
+    href="/dashboard/fabrics/add"
+    className="bg-black text-white px-5 py-2 rounded-lg"
+  >
+    + Add Fabric
+  </Link>
+
+</div>
       </div>
 {isLoading && (
   <p className="mb-2 text-sm text-gray-500">

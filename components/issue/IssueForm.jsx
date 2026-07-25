@@ -1,5 +1,5 @@
 "use client";
-
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -19,6 +19,7 @@ const schema = z.object({
 });
 
 export default function IssueForm() {
+    const [search, setSearch] = useState("");
     const router = useRouter();
 
     const { data } = useFabrics({
@@ -28,18 +29,33 @@ export default function IssueForm() {
 
     const fabrics = data?.data || [];
 
+    const filteredFabrics = fabrics.filter((fabric) => {
+  const text = search.toLowerCase();
+
+  return (
+    fabric.fabricCode?.toLowerCase().includes(text) ||
+    fabric.construction?.toLowerCase().includes(text) ||
+    fabric.color?.toLowerCase().includes(text) ||
+    fabric.rackNumber?.toLowerCase().includes(text) ||
+    fabric.composition?.some((item) =>
+      item.material.toLowerCase().includes(text)
+    )
+  );
+});
+    
+
     const { mutate, isPending } = useIssueFabric();
 
-    const {
-        register,
-        handleSubmit,
-        watch,
-        formState: { errors },
-        reset,
-    } = useForm({
-        resolver: zodResolver(schema),
-    });
-
+const {
+  register,
+  handleSubmit,
+  watch,
+  setValue,
+  formState: { errors },
+  reset,
+} = useForm({
+  resolver: zodResolver(schema),
+});
     const selectedId = watch("fabric");
 
     const selectedFabric = fabrics.find(
@@ -61,6 +77,7 @@ export default function IssueForm() {
         mutate(
             {
                 fabric: selectedFabric._id,
+                challanNo: data.challanNo,
                 issuedTo: formData.issuedTo,
                 quantity: Number(formData.quantity),
                 description: formData.description,
@@ -86,24 +103,54 @@ export default function IssueForm() {
                     Select Fabric
                 </label>
 
-                <select
-                    {...register("fabric")}
-                    className="w-full border rounded-lg px-3 py-2"
-                >
-                    <option value="">
-                        Select Fabric
-                    </option>
+               <Input
+  placeholder="Search by Fabric Code / Construction / Color / Rack..."
+  value={search}
+  onChange={(e) => setSearch(e.target.value)}
+/>
 
-                    {fabrics.map((fabric) => (
-                        <option
-                            key={fabric._id}
-                            value={fabric._id}
-                        >
-                            {fabric.fabricCode} | {fabric.color} | Stock :
-                            {fabric.quantity} {fabric.unit}
-                        </option>
-                    ))}
-                </select>
+<input
+  type="hidden"
+  {...register("fabric")}
+/>
+
+{search && (
+  <div className="border rounded-lg mt-2 max-h-72 overflow-y-auto">
+
+    {filteredFabrics.length === 0 ? (
+      <p className="p-4 text-gray-500">
+        No Fabric Found
+      </p>
+    ) : (
+      filteredFabrics.map((fabric) => (
+        <div
+          key={fabric._id}
+          onClick={() => {
+            setValue("fabric", fabric._id);
+
+            setSearch(
+              `${fabric.fabricCode} | ${fabric.construction} | ${fabric.color}`
+            );
+          }}
+          className="cursor-pointer border-b p-3 hover:bg-gray-100"
+        >
+          <p className="font-semibold">
+            {fabric.fabricCode}
+          </p>
+
+          <p className="text-sm text-gray-500">
+            {fabric.construction} | {fabric.color}
+          </p>
+
+          <p className="text-xs">
+            Stock : {fabric.quantity} {fabric.unit}
+          </p>
+        </div>
+      ))
+    )}
+
+  </div>
+)}
 
                 {errors.fabric && (
                     <p className="text-red-500 text-sm mt-1">
@@ -194,6 +241,19 @@ export default function IssueForm() {
                     </p>
                 )}
 
+            </div>
+            
+            {/* challan No */}
+            
+            <div>
+                <label className="font-medium block mb-2">
+                    Challan No
+                </label>
+
+                <Input
+                    {...register("challanNo")}
+                    placeholder="Enter Challan Number"
+                />
             </div>
 
             {/* Quantity */}

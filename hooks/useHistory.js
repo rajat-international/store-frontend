@@ -1,11 +1,21 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
-import { getHistory } from "@/services/history";
+import {
+  useQuery
+} from "@tanstack/react-query";
+import {
+  getHistory
+} from "@/services/history";
 
 export default function useHistory(params) {
   return useQuery({
-    queryKey: ["history", params],
+    queryKey: [
+      "history",
+      params.page,
+      params.limit,
+      params.search,
+      params.type,
+    ],
 
     queryFn: async () => {
       const res = await getHistory(params);

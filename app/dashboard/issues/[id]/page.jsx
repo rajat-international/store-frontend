@@ -59,6 +59,10 @@ export default function IssueDetailsPage() {
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
+          <Info
+            title="Challan No"
+            value={data.challanNo}
+          />
 
           <Info title="Fabric Code" value={data.fabricCode} />
 

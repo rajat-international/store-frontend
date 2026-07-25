@@ -19,3 +19,8 @@ export const updateFabric = (id, data) =>
 // DELETE
 export const deleteFabric = (id) =>
   api.delete(`/fabrics/${id}`);
+
+export const exportFabrics = () =>
+  api.get("/fabrics/export", {
+    responseType: "blob",
+  });
