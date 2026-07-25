@@ -13,8 +13,20 @@ import { Input } from "@/components/ui/input";
 
 const schema = z.object({
     fabric: z.string().min(1, "Please select fabric"),
-    issuedTo: z.string().min(2, "Merchant name is required"),
-    quantity: z.coerce.number().min(1, "Quantity must be greater than 0"),
+
+    challanNo: z
+        .string()
+        .trim()
+        .min(1, "Challan Number is required"),
+
+    issuedTo: z
+        .string()
+        .min(2, "Merchant name is required"),
+
+    quantity: z.coerce
+        .number()
+        .min(1, "Quantity must be greater than 0"),
+
     description: z.string().optional(),
 });
 
@@ -30,32 +42,32 @@ export default function IssueForm() {
     const fabrics = data?.data || [];
 
     const filteredFabrics = fabrics.filter((fabric) => {
-  const text = search.toLowerCase();
+        const text = search.toLowerCase();
 
-  return (
-    fabric.fabricCode?.toLowerCase().includes(text) ||
-    fabric.construction?.toLowerCase().includes(text) ||
-    fabric.color?.toLowerCase().includes(text) ||
-    fabric.rackNumber?.toLowerCase().includes(text) ||
-    fabric.composition?.some((item) =>
-      item.material.toLowerCase().includes(text)
-    )
-  );
-});
-    
+        return (
+            fabric.fabricCode?.toLowerCase().includes(text) ||
+            fabric.construction?.toLowerCase().includes(text) ||
+            fabric.color?.toLowerCase().includes(text) ||
+            fabric.rackNumber?.toLowerCase().includes(text) ||
+            fabric.composition?.some((item) =>
+                item.material.toLowerCase().includes(text)
+            )
+        );
+    });
+
 
     const { mutate, isPending } = useIssueFabric();
 
-const {
-  register,
-  handleSubmit,
-  watch,
-  setValue,
-  formState: { errors },
-  reset,
-} = useForm({
-  resolver: zodResolver(schema),
-});
+    const {
+        register,
+        handleSubmit,
+        watch,
+        setValue,
+        formState: { errors },
+        reset,
+    } = useForm({
+        resolver: zodResolver(schema),
+    });
     const selectedId = watch("fabric");
 
     const selectedFabric = fabrics.find(
@@ -77,7 +89,7 @@ const {
         mutate(
             {
                 fabric: selectedFabric._id,
-                challanNo: data.challanNo,
+                challanNo: formData.challanNo,
                 issuedTo: formData.issuedTo,
                 quantity: Number(formData.quantity),
                 description: formData.description,
@@ -103,54 +115,54 @@ const {
                     Select Fabric
                 </label>
 
-               <Input
-  placeholder="Search by Fabric Code / Construction / Color / Rack..."
-  value={search}
-  onChange={(e) => setSearch(e.target.value)}
-/>
+                <Input
+                    placeholder="Search by Fabric Code / Construction / Color / Rack..."
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                />
 
-<input
-  type="hidden"
-  {...register("fabric")}
-/>
+                <input
+                    type="hidden"
+                    {...register("fabric")}
+                />
 
-{search && (
-  <div className="border rounded-lg mt-2 max-h-72 overflow-y-auto">
+                {search && (
+                    <div className="border rounded-lg mt-2 max-h-72 overflow-y-auto">
 
-    {filteredFabrics.length === 0 ? (
-      <p className="p-4 text-gray-500">
-        No Fabric Found
-      </p>
-    ) : (
-      filteredFabrics.map((fabric) => (
-        <div
-          key={fabric._id}
-          onClick={() => {
-            setValue("fabric", fabric._id);
+                        {filteredFabrics.length === 0 ? (
+                            <p className="p-4 text-gray-500">
+                                No Fabric Found
+                            </p>
+                        ) : (
+                            filteredFabrics.map((fabric) => (
+                                <div
+                                    key={fabric._id}
+                                    onClick={() => {
+                                        setValue("fabric", fabric._id);
 
-            setSearch(
-              `${fabric.fabricCode} | ${fabric.construction} | ${fabric.color}`
-            );
-          }}
-          className="cursor-pointer border-b p-3 hover:bg-gray-100"
-        >
-          <p className="font-semibold">
-            {fabric.fabricCode}
-          </p>
+                                        setSearch(
+                                            `${fabric.fabricCode} | ${fabric.construction} | ${fabric.color}`
+                                        );
+                                    }}
+                                    className="cursor-pointer border-b p-3 hover:bg-gray-100"
+                                >
+                                    <p className="font-semibold">
+                                        {fabric.fabricCode}
+                                    </p>
 
-          <p className="text-sm text-gray-500">
-            {fabric.construction} | {fabric.color}
-          </p>
+                                    <p className="text-sm text-gray-500">
+                                        {fabric.construction} | {fabric.color}
+                                    </p>
 
-          <p className="text-xs">
-            Stock : {fabric.quantity} {fabric.unit}
-          </p>
-        </div>
-      ))
-    )}
+                                    <p className="text-xs">
+                                        Stock : {fabric.quantity} {fabric.unit}
+                                    </p>
+                                </div>
+                            ))
+                        )}
 
-  </div>
-)}
+                    </div>
+                )}
 
                 {errors.fabric && (
                     <p className="text-red-500 text-sm mt-1">
@@ -242,18 +254,24 @@ const {
                 )}
 
             </div>
-            
+
             {/* challan No */}
-            
+
             <div>
                 <label className="font-medium block mb-2">
                     Challan No
                 </label>
 
                 <Input
-                    {...register("challanNo")}
                     placeholder="Enter Challan Number"
+                    {...register("challanNo")}
                 />
+
+                {errors.challanNo && (
+                    <p className="text-red-500 text-sm mt-1">
+                        {errors.challanNo.message}
+                    </p>
+                )}
             </div>
 
             {/* Quantity */}
