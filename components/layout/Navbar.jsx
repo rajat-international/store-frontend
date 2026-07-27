@@ -12,7 +12,7 @@ export default function Navbar() {
   };
 
   return (
-    <header className="bg-white border-b px-8 py-4 flex justify-between items-center">
+    <header className="bg-white sticky top-0 z-50 border-b px-8 py-4 flex justify-between items-center">
       <h1 className="text-xl font-semibold">Fabric Inventory</h1>
 
       <button

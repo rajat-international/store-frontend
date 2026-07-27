@@ -24,6 +24,7 @@ export default function FabricTable({ fabrics = [] }) {
                         <th className="p-4 text-left">#</th>
 
                         <th className="p-4 text-left">Code</th>
+                        <th className="p-4 text-left">category</th>
 
                         <th className="p-4 text-left">Construction</th>
 
@@ -62,6 +63,9 @@ export default function FabricTable({ fabrics = [] }) {
 
                             <td className="p-4 font-medium">
                                 {fabric.fabricCode}
+                            </td>
+                            <td className="p-4 font-medium">
+                                {fabric.category}
                             </td>
 
                             <td className="p-4">
@@ -102,7 +106,7 @@ export default function FabricTable({ fabrics = [] }) {
                             </td>
 
                             <td className="p-4">
-                                ₹ {fabric.price}
+                                ₹ {fabric.price}/Meter
                             </td>
 
                             <td className="p-4">

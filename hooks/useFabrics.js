@@ -10,6 +10,7 @@ export default function useFabrics(params) {
       params.page,
       params.limit,
       params.search,
+      params.category,
     ],
 
     queryFn: async () => {

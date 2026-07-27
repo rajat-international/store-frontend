@@ -14,6 +14,7 @@ const schema = z.object({
 
     fabricCode: z.string().min(2, "Fabric Code is required"),
 
+    category: z.string().min(1, "Select Category"),
     construction: z.string().min(2, "Construction is required"),
 
     composition: z.array(
@@ -28,7 +29,6 @@ const schema = z.object({
     ),
 
     gsm: z.coerce.number().min(1, "GSM is required"),
-
     color: z.string().min(2, "Color is required"),
 
     supplier: z.string().min(2, "Supplier is required"),
@@ -63,6 +63,7 @@ export default function FabricForm({
 
         defaultValues: defaultValues || {
             fabricCode: "",
+             category: "",
             construction: "",
             composition: [
                 {
@@ -124,7 +125,34 @@ export default function FabricForm({
                         {errors.fabricCode?.message}
                     </p>
                 </div>
+                <div>
+                    <label className="block mb-2 font-medium">
+                        Category
+                    </label>
 
+                    <select
+                        {...register("category")}
+                        className="w-full border rounded-lg px-3 py-2"
+                    >
+                        <option value="">Select Category</option>
+
+                        <option value="Knitted">Knitted</option>
+                        <option value="Woven">Woven</option>
+                        <option value="Rib">Rib</option>
+                        <option value="Interlock">Interlock</option>
+                        <option value="French Terry">French Terry</option>
+                        <option value="Fleece">Fleece</option>
+                        <option value="Lycra">Lycra</option>
+                        <option value="Denim">Denim</option>
+                        <option value="Others">Others</option>
+                    </select>
+
+                    {errors.category && (
+                        <p className="text-red-500 text-sm mt-1">
+                            {errors.category.message}
+                        </p>
+                    )}
+                </div>
                 <div>
                     <label>Construction</label>
 
