@@ -13,7 +13,7 @@ import { Input } from "@/components/ui/input";
 const schema = z.object({
 
     fabricCode: z.string().min(2, "Fabric Code is required"),
-
+    width: z.string().optional(),
     category: z.string().min(1, "Select Category"),
     construction: z.string().min(2, "Construction is required"),
 
@@ -63,7 +63,7 @@ export default function FabricForm({
 
         defaultValues: defaultValues || {
             fabricCode: "",
-             category: "",
+            category: "",
             construction: "",
             composition: [
                 {
@@ -76,6 +76,7 @@ export default function FabricForm({
             supplier: "",
             quantity: "",
             price: "",
+            width: "",
             unit: "Meter",
             rackNumber: "",
             lowStockLimit: "",
@@ -295,6 +296,23 @@ export default function FabricForm({
                     <p className="text-red-500 text-sm">
                         {errors.quantity?.message}
                     </p>
+                </div>
+                <div>
+                    <label className="block mb-2 font-medium">
+                        Width
+                    </label>
+
+                    <Input
+                        type="text"
+                        placeholder='Enter Width (e.g. 58")'
+                        {...register("width")}
+                    />
+
+                    {errors.width && (
+                        <p className="text-red-500 text-sm mt-1">
+                            {errors.width.message}
+                        </p>
+                    )}
                 </div>
 
                 <div>

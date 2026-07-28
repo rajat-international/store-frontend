@@ -39,6 +39,7 @@ export default function FabricTable({ fabrics = [] }) {
                         <th className="p-4 text-left">Stock</th>
 
                         <th className="p-4 text-left">Unit</th>
+                        <th className="p-4 text-left">Width</th>
 
                         <th className="p-4 text-left">Price</th>
 
@@ -103,6 +104,9 @@ export default function FabricTable({ fabrics = [] }) {
 
                             <td className="p-4">
                                 {fabric.unit}
+                            </td>
+                            <td className="p-4">
+                                {fabric.width}
                             </td>
 
                             <td className="p-4">
