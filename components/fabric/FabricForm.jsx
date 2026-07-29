@@ -9,6 +9,8 @@ import useAddFabric from "@/hooks/useAddFabric";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import Image from "next/image";
+import { useState } from "react";
 
 const schema = z.object({
 
@@ -42,6 +44,7 @@ const schema = z.object({
     rackNumber: z.string().min(1, "Rack Number is required"),
 
     lowStockLimit: z.coerce.number().min(1),
+    image: z.any().optional(),
 });
 
 export default function FabricForm({
@@ -50,7 +53,7 @@ export default function FabricForm({
     fabricId,
 }) {
     const addFabric = useAddFabric();
-
+const [previewImage, setPreviewImage] = useState(defaultValues?.image || null);
     const updateFabric = useUpdateFabric();
 
     const {
@@ -80,6 +83,7 @@ export default function FabricForm({
             unit: "Meter",
             rackNumber: "",
             lowStockLimit: "",
+            image: "",
         },
     });
 
@@ -126,8 +130,9 @@ export default function FabricForm({
                         {errors.fabricCode?.message}
                     </p>
                 </div>
+             
                 <div>
-                    <label className="block mb-2 font-medium">
+                    <label className="block font-medium">
                         Category
                     </label>
 
@@ -373,6 +378,35 @@ export default function FabricForm({
                         {errors.lowStockLimit?.message}
                     </p>
                 </div>
+                <div>
+    <label className="block mb-2 font-medium">Image</label>
+
+    {previewImage && (
+        <Image height={80} width={100}
+            src={previewImage}
+            alt="Preview"
+            className="w-20 h-20 object-cover rounded border mb-2"
+        />
+    )}
+
+    <input
+        type="file"
+        accept="image/*"
+        {...register("image", {
+            onChange: (e) => {
+                const file = e.target.files?.[0];
+                if (file) {
+                    setPreviewImage(URL.createObjectURL(file));
+                }
+            },
+        })}
+        className="w-full border rounded-lg px-3 py-2"
+    />
+
+    <p className="text-red-500 text-sm">
+        {errors.image?.message}
+    </p>
+</div>
 
             </div>
 

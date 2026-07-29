@@ -48,6 +48,24 @@ export default function FabricDetailsPage() {
 
       </div>
 
+      {/* Image */}
+
+      <div className="bg-white rounded-xl shadow p-6">
+
+        {fabric.image ? (
+          <img
+            src={fabric.image}
+            alt={fabric.fabricCode}
+            className="w-full max-w-xs h-56 object-cover rounded-lg border mx-auto"
+          />
+        ) : (
+          <div className="w-full max-w-xs h-56 flex items-center justify-center bg-gray-100 text-gray-400 rounded-lg border mx-auto">
+            No Image
+          </div>
+        )}
+
+      </div>
+
       <div className="grid lg:grid-cols-2 gap-6">
 
         {/* Fabric Information */}
@@ -59,7 +77,9 @@ export default function FabricDetailsPage() {
           </h2>
 
           <Info title="Fabric Code" value={fabric.fabricCode} />
+          <Info title="Category" value={fabric.category} />
           <Info title="Construction" value={fabric.construction} />
+          <Info title="Width" value={fabric.width} />
           <Info title="GSM" value={fabric.gsm} />
           <Info title="Color" value={fabric.color} />
           <Info title="Supplier" value={fabric.supplier} />

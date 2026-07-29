@@ -31,7 +31,7 @@ export default function Sidebar() {
 
       <div className="text-2xl font-bold py-2 flex justify-center border-b">
 
-        <Image className="h-16 w-auto" alt="logo" height={60} width={200} src="/assets/logo.png"/>
+        <Image priority className="h-16 w-auto" alt="logo" height={60} width={200} src="/assets/logo.png"/>
 
       </div>
 

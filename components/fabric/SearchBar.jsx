@@ -10,7 +10,7 @@ export default function SearchBar({
       placeholder="Search by Code or Construction..."
       value={value}
       onChange={(e) => onChange(e.target.value)}
-      className="border rounded-lg px-4 py-2 w-80"
+      className="border rounded-lg px-4 py-2 w-40 md:w-80"
     />
   );
 }

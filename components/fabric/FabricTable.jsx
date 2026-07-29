@@ -3,6 +3,7 @@
 import Link from "next/link";
 import DeleteButton from "./DeleteButton";
 import { Pencil, Eye } from "lucide-react";
+import Image from "next/image";
 
 export default function FabricTable({ fabrics = [] }) {
     if (!fabrics.length) {
@@ -15,14 +16,12 @@ export default function FabricTable({ fabrics = [] }) {
 
     return (
         <div className="bg-white rounded-xl shadow overflow-x-auto">
-            <table className="w-full text-sm">
-
+            <table className="w-full text-sm min-w-[1100px]">
                 <thead className="bg-gray-100">
-
                     <tr>
 
                         <th className="p-4 text-left">#</th>
-
+                        <th className="p-4 text-left">image</th>
                         <th className="p-4 text-left">Code</th>
                         <th className="p-4 text-left">category</th>
 
@@ -34,14 +33,12 @@ export default function FabricTable({ fabrics = [] }) {
 
                         <th className="p-4 text-left">Color</th>
 
-                        <th className="p-4 text-left">Supplier</th>
 
                         <th className="p-4 text-left">Stock</th>
 
                         <th className="p-4 text-left">Unit</th>
                         <th className="p-4 text-left">Width</th>
 
-                        <th className="p-4 text-left">Price</th>
 
                         <th className="p-4 text-left">Rack</th>
 
@@ -61,6 +58,22 @@ export default function FabricTable({ fabrics = [] }) {
                         >
 
                             <td className="p-4">{index + 1}</td>
+                            <td className="p-4">
+                                {fabric.image ? (
+                                    <Image
+                                        src={fabric.image}
+                                        alt={fabric.fabricCode}
+                                        width={100}
+                                        height={80}
+                                        unoptimized
+                                        className="object-cover rounded border"
+                                    />
+                                ) : (
+                                    <div className="w-12 h-12 flex items-center justify-center bg-gray-100 text-gray-400 text-xs rounded border">
+                                        No Img
+                                    </div>
+                                )}
+                            </td>
 
                             <td className="p-4 font-medium">
                                 {fabric.fabricCode}
@@ -87,7 +100,6 @@ export default function FabricTable({ fabrics = [] }) {
 
                             <td className="p-4">{fabric.color}</td>
 
-                            <td className="p-4">{fabric.supplier}</td>
 
                             <td className="p-4">
 
@@ -109,9 +121,7 @@ export default function FabricTable({ fabrics = [] }) {
                                 {fabric.width}
                             </td>
 
-                            <td className="p-4">
-                                ₹ {fabric.price}/Meter
-                            </td>
+                           
 
                             <td className="p-4">
                                 {fabric.rackNumber}

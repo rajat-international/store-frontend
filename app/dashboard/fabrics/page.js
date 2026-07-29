@@ -35,56 +35,53 @@ const { mutate: exportExcel, isPending } =
   if (error) return <h2>Error loading fabrics</h2>;
 
   return (
-    <div>
+    <div className="min-w-0">
       <div className="flex justify-between items-center mb-6">
-      <div className="flex gap-3">
+   <div className="flex flex-wrap justify-between items-center gap-4 mb-6">
 
-  <SearchBar
-    value={search}
-    onChange={setSearch}
-  />
+  <div className="flex flex-wrap gap-3">
+    <SearchBar
+      value={search}
+      onChange={setSearch}
+    />
 
-  <select
-    value={category}
-    onChange={(e) => {
-      setCategory(e.target.value);
-      setPage(1);
-    }}
-    className="border rounded-lg px-4 py-2"
-  >
-    <option value="">All Categories</option>
+    <select
+      value={category}
+      onChange={(e) => {
+        setCategory(e.target.value);
+        setPage(1);
+      }}
+      className="border rounded-lg px-4 py-2"
+    >
+      <option value="">All Categories</option>
+      <option value="Knitted">Knitted</option>
+      <option value="Woven">Woven</option>
+      <option value="Rib">Rib</option>
+      <option value="Interlock">Interlock</option>
+      <option value="French Terry">French Terry</option>
+      <option value="Fleece">Fleece</option>
+      <option value="Lycra">Lycra</option>
+      <option value="Denim">Denim</option>
+      <option value="Others">Others</option>
+    </select>
+  </div>
 
-    <option value="Knitted">Knitted</option>
-    <option value="Woven">Woven</option>
-    <option value="Rib">Rib</option>
-    <option value="Interlock">Interlock</option>
-    <option value="French Terry">French Terry</option>
-    <option value="Fleece">Fleece</option>
-    <option value="Lycra">Lycra</option>
-    <option value="Denim">Denim</option>
-    <option value="Others">Others</option>
-  </select>
+  <div className="flex flex-wrap gap-3">
+    <button
+      onClick={() => exportExcel()}
+      disabled={isPending}
+      className="bg-green-600 text-white px-5 py-2 rounded-lg whitespace-nowrap"
+    >
+      {isPending ? "Exporting..." : "Export Excel"}
+    </button>
 
-</div>
-
-     <div className="flex gap-3">
-
-  <button
-    onClick={() => exportExcel()}
-    disabled={isPending}
-    className="bg-green-600 text-white px-5 py-2 rounded-lg"
-  >
-    {isPending
-      ? "Exporting..."
-      : "Export Excel"}
-  </button>
-
-  <Link
-    href="/dashboard/fabrics/add"
-    className="bg-black text-white px-5 py-2 rounded-lg"
-  >
-    + Add Fabric
-  </Link>
+    <Link
+      href="/dashboard/fabrics/add"
+      className="bg-black text-white px-5 py-2 rounded-lg whitespace-nowrap"
+    >
+      + Add Fabric
+    </Link>
+  </div>
 
 </div>
       </div>

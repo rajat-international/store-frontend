@@ -6,10 +6,10 @@ export default function DashboardLayout({ children }) {
     <div className="flex">
       <Sidebar />
 
-      <div className="flex-1">
+      <div className="flex-1 min-w-0">
         <Navbar />
 
-        <main className="min-h-screen bg-gray-100 p-6">
+        <main className="min-h-screen bg-gray-100 p-6 min-w-0">
           {children}
         </main>
       </div>
