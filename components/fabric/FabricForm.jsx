@@ -11,6 +11,7 @@ import useAddFabric from "@/hooks/useAddFabric";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ImagePlus, Trash2 } from "lucide-react";
+import Image from "next/image";
 
 const schema = z.object({
     fabricCode: z.string().min(2, "Fabric Code is required"),
@@ -55,6 +56,7 @@ export default function FabricForm({
         control,
         handleSubmit,
         setValue,
+        setError,
         formState: { errors },
     } = useForm({
         resolver: zodResolver(schema),
@@ -92,10 +94,34 @@ export default function FabricForm({
             return alert("Composition total must equal 100%");
         }
 
+        const formData = new FormData();
+
+        // saare simple fields
+        formData.append("fabricCode", data.fabricCode);
+        formData.append("category", data.category);
+        formData.append("construction", data.construction);
+        formData.append("color", data.color);
+        formData.append("gsm", data.gsm);
+        formData.append("width", data.width || "");
+        formData.append("supplier", data.supplier);
+        formData.append("quantity", data.quantity);
+        formData.append("price", data.price);
+        formData.append("unit", data.unit);
+        formData.append("rackNumber", data.rackNumber);
+        formData.append("lowStockLimit", data.lowStockLimit);
+
+
+        formData.append("composition", JSON.stringify(data.composition));
+
+
+        if (data.image && data.image.length > 0) {
+            formData.append("image", data.image[0]);
+        }
+
         if (isEdit) {
-            updateFabric.mutate({ id: fabricId, data });
+            updateFabric.mutate({ id: fabricId, data: formData });
         } else {
-            addFabric.mutate(data);
+            addFabric.mutate(formData);
         }
     };
 
@@ -115,7 +141,7 @@ export default function FabricForm({
                     <div className="relative w-28 h-28 shrink-0 rounded-lg border-2 border-dashed border-gray-300 flex items-center justify-center overflow-hidden bg-gray-50">
                         {previewImage ? (
                             <>
-                                <img
+                                <Image height={80} width={100}
                                     src={previewImage}
                                     alt="Preview"
                                     className="w-full h-full object-cover"
@@ -150,6 +176,18 @@ export default function FabricForm({
                                 onChange: (e) => {
                                     const file = e.target.files?.[0];
                                     if (file) {
+                                        const maxSize = 1 * 1024 * 1024; // 1MB
+
+                                        if (file.size > maxSize) {
+                                            setError("image", {
+                                                type: "manual",
+                                                message: "Image size must be less than 1MB",
+                                            });
+                                            setValue("image", null);
+                                            e.target.value = "";
+                                            return;
+                                        }
+
                                         setPreviewImage(URL.createObjectURL(file));
                                     }
                                 },
@@ -309,8 +347,8 @@ export default function FabricForm({
                     {addFabric.isPending || updateFabric.isPending
                         ? "Saving..."
                         : isEdit
-                        ? "Update Fabric"
-                        : "Add Fabric"}
+                            ? "Update Fabric"
+                            : "Add Fabric"}
                 </Button>
             </div>
         </form>

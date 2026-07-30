@@ -16,7 +16,7 @@ export default function FabricTable({ fabrics = [] }) {
 
     return (
         <div className="bg-white rounded-xl shadow overflow-x-auto">
-            <table className="w-full text-sm min-w-[1100px]">
+            <table className="w-full text-sm min-w-275">
                 <thead className="bg-gray-100">
                     <tr>
 
