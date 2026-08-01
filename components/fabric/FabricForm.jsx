@@ -218,15 +218,8 @@ export default function FabricForm({
                             className="w-full border rounded-lg px-3 py-2 h-10"
                         >
                             <option value="">Select Category</option>
-                            <option value="Knitted">Knitted</option>
-                            <option value="Woven">Woven</option>
-                            <option value="Rib">Rib</option>
-                            <option value="Interlock">Interlock</option>
-                            <option value="French Terry">French Terry</option>
-                            <option value="Fleece">Fleece</option>
-                            <option value="Lycra">Lycra</option>
-                            <option value="Denim">Denim</option>
-                            <option value="Others">Others</option>
+                            <option value="Sifly">Sifly</option>
+                    
                         </select>
                     </Field>
 
