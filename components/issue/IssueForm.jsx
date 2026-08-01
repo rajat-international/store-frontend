@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -32,6 +32,8 @@ const schema = z.object({
 
 export default function IssueForm() {
     const [search, setSearch] = useState("");
+    const [showDropdown, setShowDropdown] = useState(false);
+    const wrapperRef = useRef(null);
     const router = useRouter();
 
     const { data } = useFabrics({
@@ -55,7 +57,6 @@ export default function IssueForm() {
         );
     });
 
-
     const { mutate, isPending } = useIssueFabric();
 
     const {
@@ -74,8 +75,23 @@ export default function IssueForm() {
         (item) => item._id === selectedId
     );
 
-    const onSubmit = (formData) => {
+    // Close dropdown when clicking outside the search box
+    useEffect(() => {
+        function handleClickOutside(event) {
+            if (
+                wrapperRef.current &&
+                !wrapperRef.current.contains(event.target)
+            ) {
+                setShowDropdown(false);
+            }
+        }
 
+        document.addEventListener("mousedown", handleClickOutside);
+        return () =>
+            document.removeEventListener("mousedown", handleClickOutside);
+    }, []);
+
+    const onSubmit = (formData) => {
         if (!selectedFabric) return;
 
         if (
@@ -97,6 +113,8 @@ export default function IssueForm() {
             {
                 onSuccess: () => {
                     reset();
+                    setSearch("");
+                    setShowDropdown(false);
                     router.push("/dashboard/issues");
                 },
             }
@@ -110,7 +128,7 @@ export default function IssueForm() {
         >
             {/* Select Fabric */}
 
-            <div>
+            <div ref={wrapperRef} className="relative">
                 <label className="block mb-2 font-medium">
                     Select Fabric
                 </label>
@@ -118,7 +136,15 @@ export default function IssueForm() {
                 <Input
                     placeholder="Search by Fabric Code / Construction / Color / Rack..."
                     value={search}
-                    onChange={(e) => setSearch(e.target.value)}
+                    onChange={(e) => {
+                        setSearch(e.target.value);
+                        setShowDropdown(true);
+                        // user is typing a new query, so clear any previous selection
+                        setValue("fabric", "", { shouldValidate: false });
+                    }}
+                    onFocus={() => {
+                        if (search) setShowDropdown(true);
+                    }}
                 />
 
                 <input
@@ -126,8 +152,8 @@ export default function IssueForm() {
                     {...register("fabric")}
                 />
 
-                {search && (
-                    <div className="border rounded-lg mt-2 max-h-72 overflow-y-auto">
+                {showDropdown && search && (
+                    <div className="border rounded-lg mt-2 max-h-72 overflow-y-auto absolute w-full bg-white z-10 shadow-lg">
 
                         {filteredFabrics.length === 0 ? (
                             <p className="p-4 text-gray-500">
@@ -138,11 +164,15 @@ export default function IssueForm() {
                                 <div
                                     key={fabric._id}
                                     onClick={() => {
-                                        setValue("fabric", fabric._id);
+                                        setValue("fabric", fabric._id, {
+                                            shouldValidate: true,
+                                        });
 
                                         setSearch(
                                             `${fabric.fabricCode} | ${fabric.construction} | ${fabric.color}`
                                         );
+
+                                        setShowDropdown(false);
                                     }}
                                     className="cursor-pointer border-b p-3 hover:bg-gray-100"
                                 >
