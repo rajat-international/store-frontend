@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import useExportFabrics from "@/hooks/useExportFabrics";
 import useFabrics from "@/hooks/useFabrics";
-
+import { categoryname } from "@/lib/utils";
 import FabricTable from "@/components/fabric/FabricTable";
 import SearchBar from "@/components/fabric/SearchBar";
 import Pagination from "@/components/common/Pagination";
@@ -54,15 +54,11 @@ const { mutate: exportExcel, isPending } =
       className="border rounded-lg px-4 py-2"
     >
       <option value="">All Categories</option>
-      <option value="Knitted">Knitted</option>
-      <option value="Woven">Woven</option>
-      <option value="Rib">Rib</option>
-      <option value="Interlock">Interlock</option>
-      <option value="French Terry">French Terry</option>
-      <option value="Fleece">Fleece</option>
-      <option value="Lycra">Lycra</option>
-      <option value="Denim">Denim</option>
-      <option value="Others">Others</option>
+        {categoryname.map((cat) => (
+        <option key={cat.value} value={cat.value}>
+         {cat.label}
+        </option>
+         ))}
     </select>
   </div>
 

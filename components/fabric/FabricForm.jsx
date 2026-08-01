@@ -5,9 +5,8 @@ import { z } from "zod";
 import useUpdateFabric from "@/hooks/useUpdateFabric";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
-
+import { categoryname } from "@/lib/utils";
 import useAddFabric from "@/hooks/useAddFabric";
-
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ImagePlus, Trash2 } from "lucide-react";
@@ -218,8 +217,11 @@ export default function FabricForm({
                             className="w-full border rounded-lg px-3 py-2 h-10"
                         >
                             <option value="">Select Category</option>
-                            <option value="Sifly">Sifly</option>
-                    
+                            {categoryname.map((cat) => (
+                                <option key={cat.value} value={cat.value}>
+                                    {cat.label}
+                                </option>
+                            ))}
                         </select>
                     </Field>
 
