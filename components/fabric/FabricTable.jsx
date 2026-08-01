@@ -66,7 +66,7 @@ export default function FabricTable({ fabrics = [] }) {
                                         width={100}
                                         height={80}
                                         unoptimized
-                                        className="object-cover rounded border"
+                                        className="object-cover h-20 w-25 rounded border"
                                     />
                                 ) : (
                                     <div className="w-12 h-12 flex items-center justify-center bg-gray-100 text-gray-400 text-xs rounded border">
@@ -75,7 +75,7 @@ export default function FabricTable({ fabrics = [] }) {
                                 )}
                             </td>
 
-                            <td className="p-4 font-medium">
+                            <td className="p-4 font-medium uppercase">
                                 {fabric.fabricCode}
                             </td>
                             <td className="p-4 font-medium">
@@ -98,7 +98,7 @@ export default function FabricTable({ fabrics = [] }) {
 
                             <td className="p-4">{fabric.gsm}</td>
 
-                            <td className="p-4">{fabric.color}</td>
+                            <td className="p-4 uppercase">{fabric.color}</td>
 
 
                             <td className="p-4">
@@ -123,7 +123,7 @@ export default function FabricTable({ fabrics = [] }) {
 
                            
 
-                            <td className="p-4">
+                            <td className="p-4 uppercase">
                                 {fabric.rackNumber}
                             </td>
 

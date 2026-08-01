@@ -1,7 +1,7 @@
 "use client";
 
 import { useForm, useFieldArray } from "react-hook-form";
-import { z } from "zod";
+import { uppercase, z } from "zod";
 import useUpdateFabric from "@/hooks/useUpdateFabric";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
@@ -230,7 +230,7 @@ export default function FabricForm({
                     </Field>
 
                     <Field label="Color" error={errors.color?.message}>
-                        <Input {...register("color")} />
+                        <Input className="uppercase" {...register("color")} />
                     </Field>
 
                     <Field label="GSM" error={errors.gsm?.message}>
@@ -321,7 +321,7 @@ export default function FabricForm({
                     </Field>
 
                     <Field label="Rack Number" error={errors.rackNumber?.message}>
-                        <Input {...register("rackNumber")} />
+                        <Input className="uppercase" {...register("rackNumber")} />
                     </Field>
 
                     <Field
