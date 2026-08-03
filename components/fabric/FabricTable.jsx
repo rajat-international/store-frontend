@@ -75,7 +75,7 @@ export default function FabricTable({ fabrics = [] }) {
                                 )}
                             </td>
 
-                            <td className="p-4 font-medium uppercase">
+                            <td className="p-4 font-medium uppercase whitespace-nowrap">
                                 {fabric.fabricCode}
                             </td>
                             <td className="p-4 font-medium">
@@ -89,7 +89,7 @@ export default function FabricTable({ fabrics = [] }) {
                             <td className="p-4">
                                 <ul className="list-disc list-inside">
                                     {fabric.composition?.map((item, index) => (
-                                        <li key={index}>
+                                        <li className="whitespace-nowrap" key={index}>
                                             {item.percentage}% {item.material}
                                         </li>
                                     ))}

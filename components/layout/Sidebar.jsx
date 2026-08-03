@@ -3,58 +3,54 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import {
+  LayoutDashboard,
+  Shirt,
+  PackageMinus,
+  History,
+} from "lucide-react";
 
 const menus = [
-  {
-    name: "Dashboard",
-    href: "/dashboard",
-  },
-  {
-    name: "Fabrics",
-    href: "/dashboard/fabrics",
-  },
-  {
-    name: "Issues",
-    href: "/dashboard/issues",
-  },
-  {
-    name: "History",
-    href: "/dashboard/history",
-  },
+  { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
+  { name: "Fabrics", href: "/dashboard/fabrics", icon: Shirt },
+  { name: "Issues", href: "/dashboard/issues", icon: PackageMinus },
+  { name: "History", href: "/dashboard/history", icon: History },
 ];
 
 export default function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="w-36 bg-white  border-r min-h-screen">
-
-      <div className="text-2xl font-bold py-2 flex justify-center border-b">
-
-        <Image priority className="h-16 w-auto" alt="logo" height={60} width={200} src="/assets/logo.png"/>
-
+    <aside className="w-20 bg-white sticky top-0 h-screen border-r flex flex-col">
+      <div className="py-3 flex justify-center border-b">
+        <Image
+          src="/assets/logo.png"
+          alt="Logo"
+          width={200}
+          height={80}
+          className="w-32"
+        />
       </div>
 
-      <nav className="flex flex-col p-3">
+      <nav className="flex flex-col items-center gap-2 p-2 flex-1 overflow-y-auto">
+        {menus.map((menu) => {
+          const Icon = menu.icon;
+          const isActive = pathname === menu.href;
 
-        {menus.map((menu) => (
-          <Link
-            key={menu.href}
-            href={menu.href}
-            className={`px-4 py-3 rounded-lg mb-2 transition
-
-            ${
-              pathname === menu.href
-                ? "bg-black text-white"
-                : "hover:bg-gray-100"
-            }`}
-          >
-            {menu.name}
-          </Link>
-        ))}
-
+          return (
+            <Link
+              key={menu.href}
+              href={menu.href}
+              title={menu.name}
+              className={`group relative flex flex-col items-center justify-center w-full py-3 rounded-lg transition
+                ${isActive ? "bg-black text-white" : "text-gray-600 hover:bg-gray-100"}`}
+            >
+              <Icon size={20} strokeWidth={isActive ? 2.2 : 1.8} />
+              <span className="text-[10px] mt-1 leading-none">{menu.name}</span>
+            </Link>
+          );
+        })}
       </nav>
-
     </aside>
   );
 }
