@@ -234,7 +234,13 @@ export default function FabricForm({
                     </Field>
 
                     <Field label="GSM" error={errors.gsm?.message}>
-                        <Input type="number" {...register("gsm")} />
+                        <Input
+                            type="number"
+                            step="any"
+                            inputMode="decimal"
+                            placeholder="e.g. 222 or 2.33"
+                            {...register("gsm")}
+                        />
                     </Field>
 
                     <Field label="Width" error={errors.width?.message}>
