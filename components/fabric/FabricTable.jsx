@@ -265,17 +265,17 @@ export default function FabricTable({ fabrics = [] }) {
                         onClick={(e) => e.stopPropagation()}
                     >
                         <Image
+                            unoptimized
+                            height={500}
+                            width={500}
                             src={previewImage.src}
                             alt={previewImage.alt}
-                            fill
-                            unoptimized
                             style={{
                                 transform: `scale(${zoom})`,
                                 transition: "transform 0.15s ease-out",
                                 cursor: zoom > 1 ? "grab" : "default",
-                                objectFit: "contain",
                             }}
-                            className="select-none"
+                            className="max-w-[90vw] max-h-[85vh] object-contain select-none"
                             draggable={false}
                         />
                     </div>
