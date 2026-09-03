@@ -29,8 +29,35 @@ export default function IssueTable({ issues = [] }) {
     });
   }, [issues, dateFilter, nameFilter, challanFilter]);
 
-  const totalPages = Math.max(1, Math.ceil(filteredIssues.length / ITEMS_PER_PAGE));
-  const paginatedIssues = filteredIssues.slice(
+  // Flatten: one row per fabric line-item, keeping the parent challan info attached
+  const flatRows = useMemo(() => {
+    const rows = [];
+    for (const issue of filteredIssues) {
+      const lines = Array.isArray(issue.items) && issue.items.length > 0
+        ? issue.items
+        : [{}]; // fallback so old single-fabric issues (if any remain) still render a row
+
+      lines.forEach((line, lineIndex) => {
+        rows.push({
+          key: `${issue._id}-${lineIndex}`,
+          issueId: issue._id,
+          createdAt: issue.createdAt,
+          challanNo: issue.challanNo,
+          issuedTo: issue.issuedTo,
+          fabricCode: line.fabricCode,
+          construction: line.construction,
+          color: line.color,
+          issuedQuantity: line.issuedQuantity,
+          isFirstLineOfIssue: lineIndex === 0,
+          lineCount: lines.length,
+        });
+      });
+    }
+    return rows;
+  }, [filteredIssues]);
+
+  const totalPages = Math.max(1, Math.ceil(flatRows.length / ITEMS_PER_PAGE));
+  const paginatedRows = flatRows.slice(
     (currentPage - 1) * ITEMS_PER_PAGE,
     currentPage * ITEMS_PER_PAGE
   );
@@ -91,7 +118,7 @@ export default function IssueTable({ issues = [] }) {
         </button>
       </div>
 
-      {!filteredIssues.length ? (
+      {!flatRows.length ? (
         <div className="bg-white rounded-xl shadow p-8 text-center">
           No Issues Found
         </div>
@@ -114,73 +141,100 @@ export default function IssueTable({ issues = [] }) {
                 </tr>
               </thead>
               <tbody>
-                {paginatedIssues.map((item, index) => (
-                  <tr key={item._id} className="border-t hover:bg-gray-50">
-                    <td className="p-4">
-                      {(currentPage - 1) * ITEMS_PER_PAGE + index + 1}
-                    </td>
-                    <td className="p-4">
-                      {new Date(item.createdAt).toLocaleDateString()}
-                    </td>
-                    <td className="p-4">{item.fabricCode}</td>
-                    <td className="p-4">{item.challanNo}</td>
-                    <td className="p-4">{item.construction}</td>
-                    <td className="p-4">{item.color}</td>
-                    <td className="p-4">{item.issuedTo}</td>
-                    <td className="p-4">{item.issuedQuantity}</td>
-                    <td className="p-4">
-                      <div className="flex gap-2 justify-center">
-                        <Link
-                          href={`/dashboard/issues/${item._id}`}
-                          className="bg-blue-500 text-white px-3 py-1 rounded"
-                        >
-                          View
-                        </Link>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
+                {(() => {
+                  let issueCounter = (currentPage - 1) * ITEMS_PER_PAGE;
+
+                  return paginatedRows.map((row) => {
+                    if (row.isFirstLineOfIssue) {
+                      issueCounter += 1;
+                    }
+                    const displaySerial = row.isFirstLineOfIssue ? issueCounter : "";
+
+                    return (
+                      <tr key={row.key} className="border-t hover:bg-gray-50">
+                        <td className="p-4">{displaySerial}</td>
+                        <td className="p-4">
+                          {row.isFirstLineOfIssue
+                            ? new Date(row.createdAt).toLocaleDateString()
+                            : ""}
+                        </td>
+                        <td className="p-4">{row.fabricCode}</td>
+                        <td className="p-4">
+                          {row.isFirstLineOfIssue ? row.challanNo : ""}
+                        </td>
+                        <td className="p-4">{row.construction}</td>
+                        <td className="p-4">{row.color}</td>
+                        <td className="p-4">
+                          {row.isFirstLineOfIssue ? row.issuedTo : ""}
+                        </td>
+                        <td className="p-4">{row.issuedQuantity}</td>
+                        <td className="p-4">
+                          {row.isFirstLineOfIssue && (
+                            <div className="flex gap-2 justify-center">
+                              <Link
+                                href={`/dashboard/issues/${row.issueId}`}
+                                className="bg-blue-500 text-white px-3 py-1 rounded"
+                              >
+                                View
+                              </Link>
+                            </div>
+                          )}
+                        </td>
+                      </tr>
+                    );
+                  });
+                })()}
               </tbody>
             </table>
           </div>
 
-          {/* Mobile card view */}
+          {/* Mobile card view — one card per issue (challan), fabrics listed inside */}
           <div className="md:hidden space-y-3">
-            {paginatedIssues.map((item, index) => (
+            {Object.values(
+              paginatedRows.reduce((acc, row) => {
+                if (!acc[row.issueId]) {
+                  acc[row.issueId] = {
+                    issueId: row.issueId,
+                    createdAt: row.createdAt,
+                    challanNo: row.challanNo,
+                    issuedTo: row.issuedTo,
+                    lines: [],
+                  };
+                }
+                acc[row.issueId].lines.push(row);
+                return acc;
+              }, {})
+            ).map((group, index) => (
               <div
-                key={item._id}
+                key={group.issueId}
                 className="bg-white rounded-xl shadow p-4 text-sm space-y-1"
               >
                 <div className="flex justify-between text-gray-500 text-xs mb-2">
                   <span>#{(currentPage - 1) * ITEMS_PER_PAGE + index + 1}</span>
-                  <span>{new Date(item.createdAt).toLocaleDateString()}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-500">Code</span>
-                  <span className="font-medium">{item.fabricCode}</span>
+                  <span>{new Date(group.createdAt).toLocaleDateString()}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-500">Challan No</span>
-                  <span className="font-medium">{item.challanNo}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-500">Construction</span>
-                  <span className="font-medium">{item.construction}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-500">Color</span>
-                  <span className="font-medium">{item.color}</span>
+                  <span className="font-medium">{group.challanNo}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-500">Issued To</span>
-                  <span className="font-medium">{item.issuedTo}</span>
+                  <span className="font-medium">{group.issuedTo}</span>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-500">Qty</span>
-                  <span className="font-medium">{item.issuedQuantity}</span>
+
+                <div className="border-t mt-2 pt-2 space-y-2">
+                  {group.lines.map((line) => (
+                    <div key={line.key} className="flex justify-between text-xs">
+                      <span className="text-gray-500">
+                        {line.fabricCode} ({line.construction}, {line.color})
+                      </span>
+                      <span className="font-medium">{line.issuedQuantity}</span>
+                    </div>
+                  ))}
                 </div>
+
                 <Link
-                  href={`/dashboard/issues/${item._id}`}
+                  href={`/dashboard/issues/${group.issueId}`}
                   className="block text-center bg-blue-500 text-white px-3 py-2 rounded mt-2"
                 >
                   View
@@ -193,8 +247,8 @@ export default function IssueTable({ issues = [] }) {
           <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-white rounded-xl shadow p-4">
             <span className="text-xs text-gray-500">
               Showing {(currentPage - 1) * ITEMS_PER_PAGE + 1}-
-              {Math.min(currentPage * ITEMS_PER_PAGE, filteredIssues.length)} of{" "}
-              {filteredIssues.length}
+              {Math.min(currentPage * ITEMS_PER_PAGE, flatRows.length)} of{" "}
+              {flatRows.length}
             </span>
 
             <div className="flex items-center gap-2">
